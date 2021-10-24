@@ -123,13 +123,12 @@ class SubWindow(QDialog):
                     attach_binary.add_header("Content-Disposition", 'attachment', filename=('utf-8', '', filename))
                     msg.attach(attach_binary)
                 smtp.sendmail(email,toAddr, msg.as_string())
-                # msg는 object 전송을 위해.as_string()으로 문자열로 바꿔야 함
-                mail_yes = QMessageBox.question(self, '메일전송성공', '메일이 전송되었습니다.',
+
+                mail_yes = QMessageBox.question(self, 'notification', '메일이 전송되었습니다.',
                                              QMessageBox.Yes)
             except :
-                mail_no = QMessageBox.question(self, '메일전송실패', '다시 입력해주세요.',
+                mail_no = QMessageBox.question(self, 'notification', '메일 전송에 실패 했습니다.\n다시 입력해주세요.',
                                              QMessageBox.Yes)
-
 
         def main():
             # query = input("검색어 입력: ")  # 네이버, 부동산...
@@ -137,14 +136,6 @@ class SubWindow(QDialog):
             Mailsend(receive,toss,pwd,title,text,file)
 
         main()
-        # try:
-        #     x= int(input("Ple"))
-        # except ValueError:
-        #     print("false")
-
-
-
-
     def showModal(self):
         return super().exec_()
 
