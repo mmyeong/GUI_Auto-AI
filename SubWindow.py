@@ -131,8 +131,7 @@ class SubWindow(QDialog):
                                              QMessageBox.Yes)
 
         def main():
-            # query = input("검색어 입력: ")  # 네이버, 부동산...
-            # info_main = input("=" * 50  + "\n" + " 뉴스요약 성공 Enter를 눌러주세요." + "\n" + "=" * 50)
+            
             Mailsend(receive,toss,pwd,title,text,file)
 
         main()
