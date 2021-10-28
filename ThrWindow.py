@@ -20,16 +20,18 @@ class ThrWindow(QDialog):
         self.frame_2 = QFrame()
         self.frame_2.setFrameShape(QFrame.Panel | QFrame.Sunken)
 
+
         self.layout_1 = QVBoxLayout()
         self.layout_2 = QVBoxLayout()
 
-        self.label1 = QLabel("정치(0), 경제(1), 사회(2), 생활/문화(3), 세계(4)", self)
+        self.label1 = QLabel("요약본을 보고 싶은 분야의 숫자를 입력하세요.\n\n정치(0), 경제(1), 사회(2), 생활/문화(3), 세계(4)", self)
+        self.label1.setFont(QFont("", 12))
         self.line1 = QLineEdit(self)
         self.btnRun = QPushButton("뉴스요약", self)  # 버튼 텍스트
         self.btnRun.clicked.connect(self.btnRun_clicked)
-        self.label2 = QLabel("", self)
-        self.label3 = QLabel("", self)
-        self.label4 = QLabel("", self)
+        self.label2 = QTextBrowser(self)
+        self.label3 = QTextBrowser(self)
+        self.label4 = QTextBrowser(self)
 
         self.layout_1.addWidget(self.label1)
         self.layout_1.addWidget(self.line1)
@@ -41,7 +43,7 @@ class ThrWindow(QDialog):
         self.frame_1.setLayout(self.layout_1)
         self.frame_2.setLayout(self.layout_2)
 
-        self.spliter_1 = QSplitter(Qt.Horizontal)
+        self.spliter_1 = QSplitter(Qt.Vertical)
         self.spliter_1.addWidget(self.frame_1)
         self.spliter_1.addWidget(self.frame_2)
 
@@ -62,7 +64,7 @@ class ThrWindow(QDialog):
                     headers = {
                         'User-Agent': 'Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)Chrome/63.0.3239.132 Safari/537.36'}
                     res = requests.get(url, headers=headers)
-                    soup = BeautifulSoup(res.text, 'lxml')
+                    soup = BeautifulSoup(res.text, 'html.parser')
 
                     return soup
 
@@ -94,6 +96,7 @@ class ThrWindow(QDialog):
                             "image_url": li.img.attrs.get('src')
                         }
                         news_list3.append(news_info)
+
 
                     return news_list3
 
@@ -147,7 +150,7 @@ class ThrWindow(QDialog):
                     # 뉴스 본문이 10 문장 이하일 경우 결과 반환 x
                     # 요약하지 않고 본문에서 앞 3문장 사용
                     try:
-                        snews_contents = summarize(news_info['news_contents'], word_count=20)
+                        snews_contents = summarize(news_info['news_contents'], word_count=40)
                     except:
                         snews_contents = None
 
@@ -161,11 +164,13 @@ class ThrWindow(QDialog):
 
                     news_info['snews_contents'] = snews_contents
 
-                self.label2.setText("첫번째 뉴스링크 \n"+str(news_list3[0]['news_url'])+'\n\n뉴스 제목 \n'+str(news_list3[0]['title'])+'\n\n요약본 \n'+str(news_list3[0]['snews_contents']))
-                self.label3.setText("두번째 뉴스링크: \n"+str(news_list3[1]['news_url'])+'\n\n뉴스 제목 \n'+str(news_list3[1]['title'])+'\n\n요약본 \n'+str(news_list3[1]['snews_contents']))
-                self.label4.setText("세번째 뉴스링크: \n"+str(news_list3[2]['news_url'])+'\n\n뉴스 제목 \n'+str(news_list3[2]['title'])+'\n\n요약본 \n'+str(news_list3[2]['snews_contents']))
+                self.label2.append("첫번째 뉴스링크 \n"+news_list3[0]['news_url']+'\n\n뉴스 제목 \n'+str(news_list3[0]['title'])+'\n\n요약본 \n'+str(news_list3[0]['snews_contents']))
+                self.label3.append("두번째 뉴스링크 \n"+news_list3[1]['news_url']+'\n\n뉴스 제목 \n'+str(news_list3[1]['title'])+'\n\n요약본 \n'+str(news_list3[1]['snews_contents']))
+                self.label4.append("세번째 뉴스링크 \n"+news_list3[2]['news_url']+'\n\n뉴스 제목 \n'+str(news_list3[2]['title'])+'\n\n요약본 \n'+str(news_list3[2]['snews_contents']))
 
-
+                self.label2.setFont(QFont("",11))
+                self.label3.setFont(QFont("", 11))
+                self.label4.setFont(QFont("", 11))
             except:
                 news_no = QMessageBox.question(self, 'notification', '뉴스요약을 하지 못했습니다. 해당 숫자를 다시 입력해주세요.',
                                                QMessageBox.Yes)
